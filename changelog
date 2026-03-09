@@ -1,0 +1,62 @@
+2026-02-13
+Features
+- Added soft Rebind integration (`com.rebind`) for Open/Close hotkeys; Configurable Miners now registers keybind rows under `MODS > Configurable Miners` when Rebind is installed.
+- Added automatic Rebind registration retry during runtime to handle load-order timing.
+- Added Rebind handle cleanup on plugin unload.
+- Config panel now shows local Open/Close key capture rows only when Rebind is not installed.
+Bug Fixes
+- Fixed an IMGUI layout/repaint mismatch that could throw `ArgumentException: Getting control ...` when opening or interacting with the Configurable Miners UI.
+
+2026-02-11
+Features
+- Routed local persistence JSON object/array splitting helpers through shared `RBN.Modlib.Persistence.JsonSettingsUtils` (`ReadNestedRaw` and `SplitTopLevelObjects`) so both mods use one parser path.
+- Switched Config panel layout to shared `RBN.Modlib.UI.UiConfigMenuShell.DrawScrollablePaddedContent(...)` to reuse common padded+scrollable panel behavior.
+
+Bug Fixes
+- Reduced parser drift risk between mods by removing duplicate nested/object parsing logic in Configurable Miners.
+
+2026-02-10
+Features
+- Moved UI style creation to `RBN.Modlib.UiStylePresets` and removed local style-builder duplication.
+- Added `stylePreset` setting (currently `style_1`) with config-file options metadata for forward-compatible style packs.
+- Added in-game `UI Style` config row to cycle available shared style presets.
+- Updated style initialization to auto-refresh when style preset or window opacity changes at runtime.
+- Added support for shared `style_2` preset via the same `UI Style` selector.
+- Switched settings JSON helper primitives to shared `RBN.Modlib.Persistence.JsonSettingsUtils`.
+- Switched toast system to shared `RBN.Modlib.UI.UiToastQueue` and shared `ToastType`.
+- Switched RGB border + solid-rect drawing to shared `RBN.Modlib.UI.UiDrawUtils`.
+- Switched centered slider primitive to shared `RBN.Modlib.UI.UiConfigRowUtils`.
+- Replaced Open/Close key rebinding with true keybind capture using shared `RBN.Modlib.UI.UiKeybindCaptureState` (press key / Escape clears / reset button).
+- Switched hover prompt card rendering to shared `RBN.Modlib.UI.UiHoverPromptRenderer`.
+- Switched config panel container layout to shared `RBN.Modlib.UI.UiConfigMenuShell` single-panel shell.
+- Switched config float/int/toggle row behavior to shared `RBN.Modlib.UI.UiConfigRowWidgets` (through local wrappers).
+
+Bug Fixes
+- Fixed first-open style rendering issue where `style_1` background could appear missing until changing styles; style cache is now refreshed when opening UI.
+- Fixed Config panel Open/Close key rebinding flow so it no longer cycles preset keys and now captures actual user key presses.
+- Removed remaining local JSON pass-through helpers and switched settings/miners/presets parsing and writing directly to `RBN.Modlib.Persistence.JsonSettingsUtils`.
+
+2026-02-09
+Features
+- Migrated shared utility logic to `RBN.Modlib` and wired Configurable Miners to consume it.
+- Added project/solution reference to `RBN.Modlib` for shared foundation usage.
+- Reused shared UI/player-control helpers for cursor unlock, player control toggle, and UI manager suppression.
+- Reused shared reflection/save-path helpers for game singleton lookup and active save folder path handling.
+
+Features
+- Added configurable group quantity (whole-number slider + textbox), with dynamic group names/picker/toggle support and backward-compatible settings persistence.
+
+- Separated Ore Clusters from Geodes in output filtering: Ore Clusters are always selectable and no longer gated by Geode toggles.
+- Improved output picker readability by brightening Coal, Copper, and Ruby text colors against dark button backgrounds.
+- Further improved picker readability by brightening Coal more and adding brighter Amethyst/Celestite text (including geode entries).
+- Refactored base plugin file into partials: lifecycle loop/UI draw, UI state/cursor control, and debug clear-event hooks are now split out for easier maintenance.
+- Split runtime into focused partials (Selection, Spawn, OutputOptions, Groups) and kept Runtime core for shared/apply/utility flow.
+- Split persistence into focused partials: Settings, Miners data, Presets, and JsonHelpers for cleaner maintenance.
+- Split UI into focused partials: Windows, Rows, Panels, Controls, and Visuals to reduce single-file complexity.
+- Removed empty ConfigurableMiners.UI.cs shell after UI partial split cleanup.
+- Updated presets layout to explicit two columns (1/3/5/7 left, 2/4/6/8 right) with center spacing.
+Bug Fixes
+- Fixed Revert so miner spawn rate/probability restore from original definition instead of keeping edited runtime values.
+- Fixed miner selection false positives by ignoring trigger colliders and requiring in-view cone targeting.
+- Fixed M-key miner selection to fall back to hover-distance targeting so prompt and open behavior stay consistent.
+- Reduced TrySpawnOre patch overhead by skipping interception unless override-configured miners exist; added 5s grace before pruning missing saved miner entries.
